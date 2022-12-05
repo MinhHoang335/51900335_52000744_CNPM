@@ -1,264 +1,282 @@
-<?php include('include/header.php'); 
+<?php 
 
+include('include/header.php');
+
+if(!isset($_SESSION['email'])){
+    header('location:signin.php');
+}
 if(isset($_SESSION['email'])){
-  $custid = $_SESSION['id'];
-
-  if(isset($_GET['cart_id'])){
-    $p_id = $_GET['cart_id'];
-
-    $sel_cart = "SELECT * FROM cart WHERE cust_id = $custid and product_id = $p_id ";
-    $run_cart    = mysqli_query($con,$sel_cart);
-  
-    if(mysqli_num_rows($run_cart) == 0){
-      $cart_query = "INSERT INTO `cart`(`cust_id`, `product_id`,quantity) VALUES ($custid,$p_id,1)";    
-      if(mysqli_query($con,$cart_query)){
-        header('location:index.php');
-      }
+     $email = $_SESSION['email'];
     }
-    if(mysqli_num_rows($run_cart) > 0){
-      while($row = mysqli_fetch_array($run_cart)){
-        $exist_pro_id = $row['product_id'];
-          if($p_id == $exist_pro_id){
-           $error="<script> alert('⚠️ This product is already in your cart  ');</script>";
-          }
-        }
-      }
 
-
-    }
-  }
-  else if(!isset($_SESSION['email'])){
-   echo "<script> function a(){alert('⚠️ Login is required to add this product into cart');}</script>";
-  }
 ?>
-      <!--Carousel Wrapper-->
-        <div class="carousel slide mt-5" id="slider" data-ride="carousel">
-            <!---Indicators-->
-            <ol class="carousel-indicators">
-              <li data-target="#slider" data-slide-to="0" class="active"></li>
-              <li data-target="#slider" data-slide-to="1" ></li>
-              <li data-target="#slider" data-slide-to="2" ></li>
-            </ol>
-
-            <div class="carousel-inner">
-               <div class="carousel-item active">
-                 <img src="img/1543986879.jpg" class="d-block w-100">
-                
-               </div>
-               <div class="carousel-item">
-                  <img src="img/dich-vu-cho-thue-xe.jpg" class="d-block w-100">
-               </div>
-               <div class="carousel-item">
-                  <img src="img/thue-xe-Giang-Gia-banner-1024x384.jpg" class="d-block w-100">
-               </div>
-            
-               <!---Controlers-->
-               <a class="carousel-control-prev" data-slide="prev" href="#slider">
-                  <span class="carousel-control-prev-icon"></span>
-               </a>
-
-               <a class="carousel-control-next" href="#slider" data-slide="next" >
-                 <span class="carousel-control-next-icon"></span>
-               </a>
-
-            </div>
-
+  <div class="container-fluid mt-2">
+      <div class="row">
+       <!---sidenavbar Column-->
+        <div class="col-md-3 col-lg-3">
+            <?php require_once('include/sidebar.php'); ?>
         </div>
-      <!--/.Carousel Wrapper-->
-      
-       
-        
-      <!--Latest product---->
-      <section >
-        <div class="container pt-5 pb-5">
-        <div >
-          <?php 
-          if(isset($msg)){
-            echo $msg;
-           }
-          else if(isset($error)){
-                  echo $error;
-                 }
-              ?>
-          </div>
-
-           <h1 class="text-center">Sản phẩm mới nhất</h1>
-  
-           <div class="row mt-4">
-                
-                <?php    
-                  $p_query = "SELECT * FROM furniture_product ORDER BY pid DESC LIMIT 4";
-                  $p_run   = mysqli_query($con,$p_query);
-                  
-                  if(mysqli_num_rows($p_run) > 0 ){
-                      while($p_row = mysqli_fetch_array($p_run)){
-                       $pid      = $p_row['pid'];
-                       $ptitle  = $p_row['title'];
-                       $pcat    = $p_row['category'];
-                       $p_price = $p_row['price'];
-                       $size    = $p_row['size'];
-                       $img1    = $p_row['image'];
-                     ?>
-                 
-                    <div class="col-md-3 mt-3">
-                        <img src="img/<?php echo $img1; ?>" class="hover-effect" width="100%" height="190px">
-                            <div class="text-center mt-3">
-                             <h5 title="<?php echo $ptitle;?>"><?php echo substr($ptitle,0,20); ?>...</h5>
-                              <h6>Rs. <?php echo $p_price; ?></h6>
-                            </div>
-                              
-                             <div class="row">
-                                  <div class="col-md-12 col-sm-12 col-12 text-center">
-                                 
-                                  <a href="index.php?cart_id=<?php echo $pid;?>" type="submit" onclick="a()" class="btn btn-primary btn-sm hover-effect">
-                                      <i class="far fa-shopping-cart"></i>
-                                  </a>
-                                  <a href="product-detail.php?product_id=<?php echo $pid;?>" class="btn btn-default btn-sm hover-effect text-dark" >
-                                       <i class="far fa-info-circle"></i> Chi tiết
-                                  </a>
-
-                                  </div>
-                            
-                           </div>
-                     </div>
-                     
-                    <?php  
-                         }
-                      }
-                  else{
-                    echo "<h3 class='text-center'> No Product Available Yet </h3>";
-                  }
-
-                ?>
-
-           </div>
-        </div>
-      </section>
-      <!---end latest Products-->
-
-      <!---We deal with-->
-      <section class="bg-white">
-         <div class="container pt-4 pb-5">
-           <h1 class="text-center pt-4">Blog </h1>
-
-           <!---Row 1-->
-           <div class="row mt-5">
-             <div class="col-md-4">
-               <img src="img/bmw.jpg" class="hover-effect" width="350px" height="200px"  alt="bedset">
-               <div class="mt-3">
-               <h4 class="text-center">Phương tiện hiện đại</h4>
-               <p class="text-center">Car4Rent hứa hẹn đem lại cho khách hàng những chuyến đi trên những phương tiện hiện đại nhất.</p>
-             </div>
-            </div>
-            <div class="col-md-4">
-              <img src="img/mec.jpg" class="hover-effect" width="350px" height="200px"  alt="bedset">
-              <div class="mt-3">
-              <h4 class="text-center">Bảo dưỡng định kỳ</h4>
-              <p class="text-center">Car4Rent luôn đảm bảo các chủ xe luôn bảo quản phương tiện của mình định kỳ, không một vết xước.</p>
-            </div>
-           </div>
-
-           <div class="col-md-4">
-            <img src="img/acura.png" class="hover-effect" width="350px" height="200px"  alt="bedset">
-            <div class="mt-3">
-            <h4 class="text-center">Minh bạch, rõ ràng</h4>
-            <p class="text-center">Quy trình thuê xe chuẩn, luôn luôn vì lợi ích cao nhất của khách hàng cũng như doanh nghiệp.</p>
-          </div>
-         </div>
-
-           </div>
-          <!---end-->
-
-           <!---row 2-->
-           <div class="row mt-5">
-            <div class="col-md-4">
-              <img src="img/lin.jpg" class="hover-effect" width="350px" height="200px"  alt="bedset">
-              <div class="mt-3">
-              <h4 class="text-center">Bảo hiểm đầy đủ</h4>
-              <p class="text-center">Car4Rent thực hiện đẩy đủ bảo hiểm cho xe, khiến khách hàng yên tâm trên mọi nẻo đường.</p>
-            </div>
-           </div>
-           <div class="col-md-4">
-             <img src="img/civic.jpg" class="hover-effect" width="350px" height="200px"  alt="bedset">
-             <div class="mt-3">
-             <h4 class="text-center">Giao/nhận tiện lợi</h4>
-             <p class="text-center">Chúng tôi giao xe 24/7, bất kể giờ nào, miễn là có xe, miễn là bạn thích.</p>
-           </div>
-          </div>
-
-          <div class="col-md-4">
-           <img src="img/out.jpg" class="hover-effect" width="350px" height="200px"  alt="bedset">
-           <div class="mt-3">
-           <h4 class="text-center">Hỗ trợ cứu hộ</h4>
-           <p class="text-center">Dù Bắc hay Nam, miền núi hay vùng biển, dịch vụ cứu hộ của Car4Rent luôn sẵn sàng.</p>
-         </div>
-        </div>
-
-          </div>
-
-         </div>
-      </section>
-      <!--end deal with-->
-   
-      <!---How to Shop -->
-      <section class="back-gray pt-4 pb-4">
-        <div class="container">
-              <h2 class="text-center">Quy trình thuê xe</h2>
-              <div class="row">
-                
-                <!--choose product card-->
-                <div class="col-md-4 p-5">
-                  <div class="card hover-effect" id="border-less">
-                    <div class="card-body mt-3 text-center">
-                       <i class="fal fa-phone-laptop fa-3x"></i>
-                          <div class="heading mt-2">
-                            <h4>Chọn xe</h4>
-                            <h6 class="text-secandary">Xem xe bạn thích</h6>
-                          </div>
-                          <p class="mt-2">Chọn xe bạn thích và thêm vào giỏ hàng.</p>
-                       
-                    </div>
-                  </div>
+        <!---Main Column -->
+        <div class="col-md-9 col-lg-9">
+             <!-- Icon Cards-->
+                <div class="row">
+          <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card text-white bg-success o-hidden h-100">
+              <div class="card-body">
+                <div class="card-body-icon">
+                  <i class="fad fa-shopping-cart fa-2x" ></i>
                 </div>
-                <!---end choose product-->
-
-                
-                <!--cash on deliver-->
-                <div class="col-md-4 p-5">
-                  <div class="card hover-effect" id="border-less">
-                    <div class="card-body mt-3 text-center">
-                       <i class="fal fa-hand-holding-box fa-3x"></i>
-                          <div class="heading mt-2">
-                            <h4>Xác nhận</h4>
-                            <h6 class="text-secandary">Đợi xác nhận đơn</h6>
-                          </div>
-                          <p class="mt-2">Nếu xe sẵn sàng trong ngày bạn chọn, chỉ trong 3-5p, đơn sẽ được xác nhận ngay!</p>
-                       
-                    </div>
-                  </div>
-                </div>
-                <!---end cash on delivery-->
-
-                
-                <!--cash on deliver-->
-                <div class="col-md-4 p-5">
-                  <div class="card hover-effect" id="border-less">
-                    <div class="card-body mt-3 text-center">
-                       <i class="fal fa-car fa-3x"></i>
-                          <div class="heading mt-2">
-                            <h4>Nhận xe</h4>
-                            <h6 class="text-secandary">Tiến hành lấy xe</h6>
-                          </div>
-                          <p class="mt-2">Giao xe, nhận cọc, kiểm tra và lên đường thôi!.</p>
-                       
-                    </div>
-                  </div>
-                </div>
-                <!---end cash on delivery-->
+                <?php  
+                   $query = "SELECT * FROM customer_order WHERE order_status='pending'";
+                   $run   = mysqli_query($con,$query);
+                   $num_new_orders = mysqli_num_rows($run);
+                 ?>
+                <div class="mr-5">  <span style="font-size:24px;"><?php echo $num_new_orders;?></span>  Đơn đang chờ xử lý</div>
 
               </div>
+              <a class="card-footer text-white clearfix small z-1" href="pending_furniture_pro.php">
+                <span class="float-left">Chi tiết</span>
+                <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+              </a>
+            </div>
           </div>
-      </section>
-       <!---end How to shop-->
+          <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card text-white bg-warning o-hidden h-100">
+              <div class="card-body">
+                <div class="card-body-icon">
+                  <i class="fad fa-truck fa-2x"></i>
+                </div>
+                <div class="mr-5">
+                <?php  
+                   $query = "SELECT * FROM customer_order WHERE order_status='delivered'";
+                   $run   = mysqli_query($con,$query);
+                   $num_delivered_orders = mysqli_num_rows($run);
+                 ?> 
+                  <span style="font-size:24px;"><?php echo $num_delivered_orders;?> </span> Đơn thành công</div>
+              </div>
+              <a class="card-footer text-white clearfix small z-1" href="delivered_furniture_pro.php">
+                <span class="float-left">Chi tiết</span>
+                <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card text-white bg-primary o-hidden h-100">
+              <div class="card-body">
+                <div class="card-body-icon">
+                  <i class="fad fa-fw fa-users fa-2x"></i>
+                </div>
+                <div class="mr-5">
+                <?php  
+                   $query = "SELECT * FROM customer";
+                   $run   = mysqli_query($con,$query);
+                   $num_customer = mysqli_num_rows($run);
+                 ?>
+                   <span style="font-size:24px;"><?php echo $num_customer;?></span>  khách hàng 
+                  </div>
+              </div>
+              <a class="card-footer text-white clearfix small z-1" href="customers.php">
+                <span class="float-left">Chi tiết</span>
+                <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-3">
+            <div class="card text-white bg-danger o-hidden h-100">
+              <div class="card-body">
+                <div class="card-body-icon">
+                  <i class="fad fa-sack fa-2x"></i>
+                </div>
+                <div class="mr-5">
+                <?php  
+                   $query = "SELECT SUm(product_amount) as 'earn' FROM customer_order";
+                   $run   = mysqli_query($con,$query);
+                   $row=mysqli_fetch_array($run);
+                   $earning = $row['earn'];
+                     
+                 ?>
+                  <span style="font-size:24px;"><?php echo $earning; ?></span> Số dư
+                </div>
+              </div>
+              <a class="card-footer text-white clearfix small z-1" href="#">
+                <span class="float-left">Chi tiết</span>
+                <span class="float-right">
+                  <i class="fas fa-angle-right"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+     
+                <!-- DataTables Example -->
+                <h3 class="mt-5">Đơn đặt mới</h3>
+            <table class="table table-responsive table-hover mt-3">
+                      <thead class="thead-light">
+                          <tr>
+                              <th>STT</th>
+                              <th>Mã đặt hàng</th>
+                              <th>Mã xe</th>
+                              <th>Hình ảnh</th>
+                              <th>Hãng</th>
+                              <th>Mã khách hàng</th>
+                              <th>Email</th>
+                              <th>Giá</th>
+                              <th>Số lượng</th>
+                              <th>Ngày đặt</th>
+                              <th>Trạng thái</th>
+                             
+                              
+                          </tr>
+                      </thead>
+                       <tbody class="text-center">
+                          <?php
+                          
+                                    $order_query = "SELECT * FROM customer_order WHERE order_status='pending' ORDER BY order_id LIMIT 5";
+                                    $run = mysqli_query($con,$order_query);
+                        
+                                    if(mysqli_num_rows($run) > 0){
+                                        while($order_row = mysqli_fetch_array($run)){
+                                            $order_invoice = $order_row['invoice_no'];
+                                            $order_id      = $order_row['order_id'];
+                                            $cust_id       = $order_row['customer_id'];
+                                            $cust_email    = $order_row['customer_email'];
+                                            $order_pro_id  = $order_row['product_id'];
+                                            $order_qty     = $order_row['products_qty'];
+                                            $order_amount  = $order_row['product_amount'];
+                                            $order_date    = $order_row['order_date'];
+                                            $order_status  = $order_row['order_status'];
+
+                                            $pr_query = "SELECT * FROM furniture_product fp INNER JOIN categories cat ON fp.category = cat.id WHERE pid = $order_pro_id ";
+                                            $pr_run   = mysqli_query($con,$pr_query);
+                                            
+                                            if(mysqli_num_rows($pr_run) > 0){
+                                                while($pr_row = mysqli_fetch_array($pr_run)){
+                                                $pid   = $pr_row['pid'];
+                                                $image = $pr_row['image'];
+                                                $category = $pr_row['category'];
+                                              
+                            ?> 
+                             <tr>
+                                 <td>
+                                 <?php echo $order_invoice;?>
+                                 </td>
+                                 <td>
+                                 <?php echo $order_id;?>
+                                 </td>
+                                 <td>
+                                     <?php echo $order_pro_id;?>
+                                 </td>
+                                 <td width="120px">
+                                     <img src="img/<?php echo $image;?>" width="100%">
+                                 </td>
+                                 <td>
+                                     <?php echo $category;?>
+                                 </td>
+                                 <td>
+                                    <?php echo $cust_id;?>
+                                 </td>
+                                 <td>
+                                    <?php echo $cust_email;?>
+                                 </td>
+                                 <td>
+                                    <?php echo $order_amount;?>
+                                 </td>
+
+                                 <td><?php echo $order_qty;?></td>
+
+                                <td><?php echo $order_date;?></td>
+                                <td><a href="pending_furniture_pro.php"><button class="btn btn-primary btn-sm">Xác nhận đơn</button></td>
+                             </tr>   
+                           <?php 
+                                  }
+                                }
+                              }
+
+                            }else {
+                              echo "<tr><td colspan='12'><h2 class='text-center text-secondary'>You have not any pending order</h2></td></tr>";
+                            }
+                        
+                     
+                    
+                    ?>
+                              
+                          
+                      </tbody>
+                  </table>
+
+                  <h3 class="mt-5">Tài khoản khách</h3>
+                  <table class="table table-responsive table-hover mt-3">
+                      <thead class="thead-light">
+                          <tr>
+                              <th>Mã KH</th>
+                              <th>Tên</th>
+                              <th>Email</th>
+                              <th>Địa chỉ</th>
+                              <th>Mã bưu chính</th>
+                              <th>Xem chi tiết</th>
+                              
+                          </tr>
+                      </thead>
+                        <tbody>
+                          <?php     
+                            $query = "SELECT * FROM customer ORDER BY cust_id DESC LIMIT 5";
+                            $run   = mysqli_query($con,$query);
+                                        
+                            if(mysqli_num_rows($run) > 0){
+                              while($row = mysqli_fetch_array($run)){
+                                $cust_id         = $row['cust_id'];
+                                $cust_name       = $row['cust_name'];
+                                $cust_email      = $row['cust_email'];    
+                                $cust_city       = $row['cust_city'];
+                                $cust_postalcode = $row['cust_postalcode'];
+                                                
+                            ?> 
+                             <tr>
+                                 <td >
+                                     <?php echo $cust_id;?>
+                                 </td>
+
+                                 <td width="150px">
+                                    <?php echo $cust_name;?>
+                                 </td>
+
+                                 <td>
+                                    <?php echo $cust_email;?>
+                                 </td>
+
+                                 <td> 
+                                 <?php echo $cust_city ?>  
+                                 </td>
+                                 <td><?php echo $cust_postalcode;?></td>
+                                 <td><a href="customers.php"><button class="btn btn-primary btn-sm">Chi tiết</button></td>
+                            
+                             </tr>   
+                           <?php 
+                               }
+
+                            }else {
+                              echo "<tr><td colspan='12'><h2 class='text-center text-secondary'>No Registered Customer Yet</h2></td></tr>";
+                            }
+                    ?>
+      
+                      </tbody> 
+                  </table>   
+          
+        </div>
+        </div>
+  </div>
+
    
-<?php include('include/footer.php'); ?>
+
+     
+
+      
+      <!-- /.container-fluid -->
+<?php include('include/footer.php');?>
