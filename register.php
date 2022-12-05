@@ -1,130 +1,125 @@
-<?php include('include/header.php'); ?>
-
-        <div class="container sign-in-up">
-          <div class="row">
-            <div class="col-md-6">
-              <h1>Car For Rent</h1>
-              <p>Ứng dụng cho thuê xe tự lái, cho thuê xe du lịch, thuê xe cưới, thuê xe kèm tài xế với giá tốt, đa dạng mẫu mã xe để lựa chọn, dịch vụ được yêu thích.</p>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-body">
-                  <h1 class="text-center mt-5">Đăng ký</h1>
+<?php
+  require('../include/header.php');
+  if(!isset($_SESSION['email'])){
+    header('location: signin.php');
+}
+?>
+<div class="container">
+<section style="margin-top:100px;">
+      <div class="row mt-5">
+          <div class="col-md-6">
+              <h3><b>Purpose of Author Account</b></h3>
+              <br>
+              <p style="font-size:20px;">
                   
-                  
-                  <form method="post" class="mt-5 p-3">
-                    
-                    <?php 
-                      if(isset($_POST['register'])){
-                          
-                          $fullname = $_POST['fullname'];
-                          $email = $_POST['email'];
-                          $password = $_POST['password'];
-                          $conf_pass = $_POST['confirm-password'];
-                          $address = $_POST['address'];
-                          $city = $_POST['city'];
-                          $postal_code = $_POST['code'];
-                          $number = $_POST['phone_number'];
-                          
-                          if(!empty($fullname) or !empty($email) or !empty($password) or !empty($conf_pass) or !empty($address) or !empty($city) or !empty($postal_code) or !empty($number)){
-
-                            if($password === $conf_pass){
-
-                              $cust_query="INSERT INTO customer(`cust_name`,`cust_email`,`cust_pass`,`cust_add`,`cust_city`,`cust_postalcode`,`cust_number`) VALUES('$fullname','$email','$password','$address','$city','$postal_code','$number')";
-
-
-                              if(mysqli_query($con,$cust_query)){
-                                  $message="You Are Registered Successfully!";
-                              }
-                              
-                              
-                              
-                            } 
-                            else{
-                                $error="Passwords do not Match";
-                            }
-                          }
-                            else{
-                          $error="All (*) Fields Required";
-                      }
-                      }
-                    
-                      ?>
-                      <?php
-                      if(isset($error)){
-                      
-                        echo "<div class='alert bg-danger' role='alert'>
-                                <span class='text-white text-center'> $error</span>
-                              </div>";
-                    
-                        }
-                      else if(isset($message)){
-                      
-                        echo "<div class='alert bg-success' role='alert'>
-                                <span class='text-white text-center'> $message</span>
-                              </div>";
-                    
-                        }
-                      
-                      ?>
-                    <div class="form-group">
-                    
-                      <input type="text" name="fullname" placeholder="Full Name" class="form-control" >
-                     </div>
-
-                    <div class="form-group">
-                      <input type="text" name="email" placeholder="Email" class="form-control" >
-                     </div>
-
-                      <div class="row">
-                        <div class="col-md-6 col-sm-6 col-12">
-                          <div class="form-group">
-                            <input type="password" name="password" placeholder="password" class="form-control" >
-                          </div>
-                        </div>
-                        <div class="col-sm-6 col-12 col-md-6 ">
-                          <div class="form-group">
-                            <input type="password" name="confirm-password" placeholder="Confirm password" class="form-control" >
-                          </div>
-                        </div>
-                      </div>
-                  
-
-                      <div class="form-group">
-                        <input type="text" name="address" placeholder="Address" class="form-control" >
-                    </div>
-                     
-                    <div class="row">
-                      <div class="col-md-6 col-6">
-                        <div class="form-group">
-                          <input type="text" name="city" placeholder="City" class="form-control" >
-                       </div>
-                      </div>
-                      
-                      <div class="col-md-6 col-6">
-                        <div class="form-group">
-                          <input type="number" name="code" placeholder="Postal code" class="form-control" >
-                       </div>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group">
-                      <input type="number" name="phone_number" placeholder="Phone Number" class="form-control" >
-                   </div>
-
-                      <div class="form-group text-center mt-4">
-                        <input type="submit" name="register" class="btn btn-primary" value="Đăng ký">
-                      </div>
-
-                      <div class="text-center mt-4"> Đã có tài khoản? <a href="sign-in.php"> Đăng nhập </a></div>
-
-                  </form>
-                </div>
-              </div>
-            </div>
+                   This is Login Section That is for Authors who can sign in through it they can also post their new post on this blog.So,Basically we are giving you a right to submit your new journey or travel post to share your experience of your tours and tours guide like "How they can travel around the world without any interruption" So Let's Join Our Team By Registering Yourself and Get Access of Admin Panel By Sig in.
+              </p>              
+              
           </div>
-        </div>
-   
-        <?php include('include/footer.php');?>
+          
+          <div class="col-md-6">
+            <!-- Default form login -->
+            <?php
+              
+              if(isset($_POST['submit']))
+              {
+                  $name     = $_POST['name'];
+                  $email    = $_POST['email'];
+                  $number   = $_POST['number'];
+                  $password = $_POST['password'];
+                  
+                  
+                  $check_query = "SELECT * FROM user WHERE email='$email' LIMIT 1   ";
+                 $check_run = mysqli_query($con,$check_query);
+                 $row = mysqli_fetch_array($check_run);
+                 $db_email = $row['email'];
+                 $db_number = $row['p_number'];
+                 
+               
+                if(empty($name) or empty($email) or empty($number) or empty($password)){
+                    
+                    $error = "All Fields Are Required"; 
+                }  
+            else{
+                      
+                   if($email != $db_email)
+                          { 
+                    if(filter_var("$email",FILTER_VALIDATE_EMAIL)){
+                        
+                       $query = "INSERT INTO user (name,email,password,p_number,role) VALUES('$name','$email','$password','$number','author')";
+                          if(mysqli_query($con,$query)){
+                        $msg = "<span style='color:green; font-weight:bold;'>You Have Been Registered! Now</span>";
+                              
+                                    } 
+                               }
+                       else{
+                           $email_error = "This is invalid email";
+                               }
+                          }
+             
+                      else{
+                        
+                           $email_error="<span style='color:red; font-weight:bold;'>This Email is Already Exist </span>";
+                      }
+                    
+             
+                     
+                  
+                  }
+              }
+              
+              ?>
+        <form class="text-center border border-light p-5" method="post" action="#!">
+           
+           <p class="h4 mb-4">Sign up</p>
+            <?php if(isset($error)){
+               echo "<span style='color:red; font-weight:bold;'><i style='color:red; font-weight:bold;' class='fas fa-frown'></i> $error</span>";
+                    }
+               else if(isset($msg)){
+               echo $msg;
+                    }
+            ?>
+            <div class="form-row mb-4">
+                <div class="col-12">
+                    <!-- First name -->
+                    <input type="text"  name="name"  id="defaultRegisterFormFirstName" class="form-control" placeholder="Full Name">
+                </div>
+
+            </div>
+
+    <!-- E-mail -->
+    <?php 
+            if(isset($email_error)){
+                echo "<span style='color:red; font-weight:bold;'>$email_error</span>";
+            }
+            ?>
+    <input type="email"  name="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail">
+     
+    <!-- Password -->
+    <input type="password"  name="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+    <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
+        At least 8 characters and 1 digit
+    </small>
+
+    <!-- Phone number -->
+    <input type="number" name="number" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number" aria-describedby="defaultRegisterFormPhoneHelpBlock">
+    <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
+        Optional - for two step authentication
+    </small>
+
+    <input class="btn btn-info my-3 btn-block" type="submit"  name="submit" value="Sign up">
+
+     <p>Already Member
+        <a href="../login.php">Sign in</a>
+    </p>
+
+        </form>
+
+          </div>
+      </div>
+</section>
+</div>
+<?php
+  require('../include/footer.php');
+?>
+
